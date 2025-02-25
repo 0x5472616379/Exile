@@ -10,6 +10,9 @@ public class RSServer
     public void Run()
     {
         _isRunning = true;
+        
+        ConnectionManager.Initialize();
+        
         if (!Kernel.TryGetFrequency(out long frequency))
         {
             Console.WriteLine("High-resolution performance counter not supported.");
@@ -21,8 +24,8 @@ public class RSServer
         while (_isRunning)
         {
             Kernel.StartTick();
-
             
+            ConnectionManager.AcceptClients();
             
             Kernel.WaitForNextTick();
             Kernel.WarnIfTickExceeded();

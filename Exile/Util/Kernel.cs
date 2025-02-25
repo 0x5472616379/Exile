@@ -50,13 +50,13 @@ static class Kernel
         double tickDuration = GetLastTickDurationMs();
         if ((int)tickDuration > ServerConfig.TICK_RATE)
         {
-            Console.WriteLine($"Warning: Tick duration exceeded! Took {tickDuration:F2} ms.");
+            ServerLogger.WarnAboutTickExceeded(tickDuration);
         }
     }
 
     public static void PrintTickDuration()
     {
-        Console.WriteLine($"Total tick duration: {GetLastTickDurationMs():F2} ms");
+        ServerLogger.PrintTickDuration(GetLastTickDurationMs());
     }
     
     public static double GetLastTickDurationMs()

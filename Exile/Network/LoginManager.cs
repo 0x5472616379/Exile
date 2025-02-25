@@ -1,0 +1,64 @@
+﻿using Exile.Constants;
+using Exile.Entities.Player;
+
+namespace Exile.Network;
+
+public class LoginManager
+{
+    public static bool Handshake(Player player)
+    {
+        var serverSessionKey = SessionEncryption.GenerateServerSessionKey();
+        player.Session.Fill(2);
+
+        var connectionType = player.Session.Reader.ReadUnsignedByte();
+        Console.WriteLine($"ConnectionType: {connectionType}");
+        var userHash = player.Session.Reader.ReadUnsignedByte();
+
+        for (var i = 0; i < 8; i++)
+            player.Session.Writer.WriteByte(0);
+
+        player.Session.Writer.WriteByte(0); //responseCode 0 - Exchanges session keys, player name, password, etc. 
+        player.Session.Writer.WriteQWord(serverSessionKey);
+        player.Session.Flush(); /* Send */
+
+        player.Session.Fill(2);
+        var connectionStatus = player.Session.Reader.ReadUnsignedByte();
+        var loginPacketSize = player.Session.Reader.ReadUnsignedByte();
+        player.Session.Fill(loginPacketSize);
+
+        var loginEncryptPacketSize = loginPacketSize - (36 + 1 + 1 + 2);
+        var magicNumber = player.Session.Reader.ReadUnsignedByte();
+        var revision = player.Session.Reader.ReadSignedWord();
+        var clientVersion = player.Session.Reader.ReadUnsignedByte();
+
+        var crcValues = new int[9];
+        for (var i = 0; i < crcValues.Length; i++)
+            crcValues[i] = player.Session.Reader.ReadDWord();
+
+        var size2 = player.Session.Reader.ReadUnsignedByte();
+        var magicNumber2 = player.Session.Reader.ReadUnsignedByte();
+
+        var ISAACSeed = new int[4];
+        for (var i = 0; i < ISAACSeed.Length; i++)
+            ISAACSeed[i] = player.Session.Reader.ReadDWord();
+        
+        player.Session.InEncryption = new SessionEncryption(ISAACSeed);
+        
+        for (var i = 0; i < ISAACSeed.Length; i++)
+            ISAACSeed[i] += 50;
+        player.Session.OutEncryption = new SessionEncryption(ISAACSeed);
+        player.Session.Writer.packetEncryption = player.Session.OutEncryption;
+
+        var UID = player.Session.Reader.ReadDWord();
+        player.Session.Username = player.Session.Reader.ReadString();
+        player.Session.Password = player.Session.Reader.ReadString();
+
+
+        player.Session.Writer.WriteByte((byte)ResponseCodes.SuccessfulLogin); /* Secondary response code 2 = Login | 5 = Already logged in etc. */
+        player.Session.Writer.WriteByte((byte)player.Attributes.Rights); /* Player Status */
+        player.Session.Writer.WriteByte(0);
+        player.Session.Flush();
+
+        return true;
+    }
+}
