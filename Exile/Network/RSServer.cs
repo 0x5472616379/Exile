@@ -1,4 +1,5 @@
 ﻿using Exile.Configuration;
+using Exile.Environment;
 using Exile.Util;
 
 namespace Exile.Network;
@@ -27,10 +28,10 @@ public class RSServer
             
             ConnectionManager.AcceptClients();
             
+            World.Process();
+            
             Kernel.WaitForNextTick();
             Kernel.WarnIfTickExceeded();
-            
-            Kernel.PrintTickDuration();
         }
     }
 }

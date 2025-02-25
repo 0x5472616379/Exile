@@ -1,5 +1,6 @@
 ﻿using System.Net.Sockets;
 using Exile.Configuration;
+using Exile.Constants.Appearance;
 using Exile.Entities.Player;
 using Exile.Environment;
 
@@ -30,6 +31,8 @@ public class ClientManager
 
     public static void Login(Player player)
     {
-        
+        player.PacketBuilder.BuildNewBuildAreaPacket();
+        player.Flags = PlayerUpdateFlags.Appearance;
+        player.PerformedTeleport = true;
     }
 }

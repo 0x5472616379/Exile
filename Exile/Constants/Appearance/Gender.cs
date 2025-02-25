@@ -1,4 +1,4 @@
-﻿namespace Exile.Entities.Player;
+﻿namespace Exile.Constants.Appearance;
 
 public enum Gender : byte
 {

@@ -35,7 +35,7 @@ public class RSStream
 
     public SessionEncryption packetEncryption { get; set; }
 
-    public void CreateFrame(ServerOpCodes id)
+    public void CreateFrame(ServerOpCodes377 id)
     {
         try
         {
@@ -47,7 +47,7 @@ public class RSStream
         }
     }
 
-    public void CreateFrameVarSize(ServerOpCodes id)
+    public void CreateFrameVarSize(ServerOpCodes377 id)
     {
         Buffer[CurrentOffset++] = (byte)((byte)id + packetEncryption.GetNextKey());
         Buffer[CurrentOffset++] = 0; // placeholder for size byte
@@ -56,7 +56,7 @@ public class RSStream
         frameStack[++frameStackPtr] = CurrentOffset;
     }
 
-    public void CreateFrameVarSizeWord(ServerOpCodes id)
+    public void CreateFrameVarSizeWord(ServerOpCodes377 id)
     {
         // creates a variable sized frame
         Buffer[CurrentOffset++] = (byte)((byte)id + packetEncryption.GetNextKey());

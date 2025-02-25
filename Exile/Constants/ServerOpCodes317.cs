@@ -3,7 +3,7 @@
 /// <summary>
 ///     Server to client opcodes
 /// </summary>
-public enum ServerOpCodes : byte
+public enum ServerOpCodes317 : byte
 {
     CONFIG_SET = 36,
     MSG_SEND = 253,

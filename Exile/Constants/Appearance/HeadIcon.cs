@@ -1,8 +1,9 @@
 ﻿namespace Exile.Constants.Appearance;
 
-public enum HeadIcon : byte
+public enum HeadIcon : sbyte
 {
-    None = 0,
+    None = -1,
+    Prayer = 0,
     Skull = 1,
     Crown = 2
 }

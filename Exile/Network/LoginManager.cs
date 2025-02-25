@@ -53,7 +53,6 @@ public class LoginManager
         player.Session.Username = player.Session.Reader.ReadString();
         player.Session.Password = player.Session.Reader.ReadString();
 
-
         player.Session.Writer.WriteByte((byte)ResponseCodes.SuccessfulLogin); /* Secondary response code 2 = Login | 5 = Already logged in etc. */
         player.Session.Writer.WriteByte((byte)player.Attributes.Rights); /* Player Status */
         player.Session.Writer.WriteByte(0);
